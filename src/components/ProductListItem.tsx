@@ -8,9 +8,9 @@ import {
   View,
 } from "react-native";
 import { Product } from "../types";
+import { defaultPizzaImage } from "@/constants/Images";
 
-const defaultPizzaImage =
-  "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
+
 
 type ProductListItemProps = {
   product: Product;
