@@ -9,6 +9,7 @@ import {
 
 type CartType = {
   items: CartItem[];
+  total: number;
   addItem: (
     product: Product,
     size: CartItem["size"]
@@ -18,6 +19,7 @@ type CartType = {
 
 const CartContext = createContext<CartType>({
   items: [],
+  total: 0,
   addItem: () => {},
   updateQuantity: () => {},
 });
@@ -65,9 +67,15 @@ const CartProvider = ({ children }: PropsWithChildren) => {
     );
   };
 
+  const total = items.reduce(
+    (sum, item) =>
+      (sum += item.product.price * item.quantity),
+    0
+  );
+
   return (
     <CartContext.Provider
-      value={{ items, addItem, updateQuantity }}
+      value={{ items, addItem, updateQuantity, total }}
     >
       {children}
     </CartContext.Provider>
