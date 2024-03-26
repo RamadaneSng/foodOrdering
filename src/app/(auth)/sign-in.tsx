@@ -1,8 +1,12 @@
-import Button from "@/components/Button";
-import { View } from "@/components/Themed";
 import { Link, Stack } from "expo-router";
-import { useState } from "react";
-import { StyleSheet, Text, TextInput } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import Button from "../../components/Button";
 import Colors from "../../constants/Colors";
 
 const SignInScreen = () => {
@@ -11,25 +15,31 @@ const SignInScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: "Sign in" }} />
+      <Stack.Screen
+        options={{
+          title: "Sign in",
+        }}
+      />
+
       <Text style={styles.label}>Email</Text>
       <TextInput
-        placeholder="jon@gmail.com"
-        style={styles.input}
         value={email}
         onChangeText={setEmail}
+        placeholder="jon@gmail.com"
+        style={styles.input}
       />
 
       <Text style={styles.label}>Password</Text>
       <TextInput
-        style={styles.input}
         value={password}
         onChangeText={setPassword}
+        placeholder=""
+        style={styles.input}
         secureTextEntry
       />
 
       <Button text="Sign in" />
-      <Link style={styles.textButton} href={"/sign-up"}>
+      <Link href="/sign-up" style={styles.textButton}>
         Create an account
       </Link>
     </View>
