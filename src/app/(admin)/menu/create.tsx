@@ -2,9 +2,10 @@ import Button from "@/components/Button";
 import Colors from "@/constants/Colors";
 import { defaultPizzaImage } from "@/constants/Images";
 import * as ImagePicker from "expo-image-picker";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -17,6 +18,10 @@ function CreateProductScreen() {
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState("");
   const [image, setImage] = useState<string | null>(null);
+
+  const { id } = useLocalSearchParams();
+
+  const isUpdating = !!id;
 
   const resetFields = () => {
     setName("");
@@ -51,10 +56,18 @@ function CreateProductScreen() {
       quality: 1,
     });
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+    }
+  };
+
+  const onSubmit = () => {
+    if (isUpdating) {
+      onUpdate();
+    } else {
+      onCreate();
     }
   };
 
@@ -66,9 +79,42 @@ function CreateProductScreen() {
     resetFields();
   };
 
+  const onUpdate = () => {
+    if (!validateInput()) {
+      return;
+    }
+
+    resetFields();
+  };
+
+  const onDelete = () => {};
+
+  const confirmDelete = () => {
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to delete this product",
+      [
+        {
+          text: "Cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: onDelete,
+        },
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: "Create Product" }} />
+      <Stack.Screen
+        options={{
+          title: isUpdating
+            ? "Update Product"
+            : "Create Product",
+        }}
+      />
       <Image
         source={{ uri: image || defaultPizzaImage }}
         style={styles.image}
@@ -95,7 +141,18 @@ function CreateProductScreen() {
       />
 
       <Text style={{ color: "red" }}>{errors}</Text>
-      <Button text="Create" onPress={onCreate} />
+      <Button
+        text={isUpdating ? "Update" : "Create"}
+        onPress={onSubmit}
+      />
+      {isUpdating && (
+        <Text
+          style={styles.textButton}
+          onPress={confirmDelete}
+        >
+          Delete
+        </Text>
+      )}
     </View>
   );
 }

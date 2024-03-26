@@ -1,8 +1,10 @@
-import Button from "@/components/Button";
+import Colors from "@/constants/Colors";
 import { useCart } from "@/providers/CartProviders";
 import { PizzaSize } from "@/types";
 import products from "@assets/data/products";
+import { FontAwesome } from "@expo/vector-icons";
 import {
+  Link,
   Stack,
   useLocalSearchParams,
   useRouter,
@@ -10,6 +12,7 @@ import {
 import React, { useState } from "react";
 import {
   Image,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -44,6 +47,32 @@ const ProductDetailsScreen = () => {
 
   return (
     <View style={styles.conatiner}>
+      <Stack.Screen
+        options={{
+          title: "Menu",
+          headerRight: () => (
+            <Link
+              href={`/(admin)/menu/create?id=${id}`}
+              asChild
+            >
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="pencil"
+                    size={25}
+                    color={Colors.light.tint}
+                    style={{
+                      marginRight: 15,
+                      opacity: pressed ? 0.5 : 1,
+                    }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+      />
+
       <Stack.Screen options={{ title: product?.name }} />
       <Image
         source={{ uri: product.image }}
