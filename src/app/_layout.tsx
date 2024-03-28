@@ -1,4 +1,5 @@
 import { useColorScheme } from "@/components/useColorScheme.web";
+import AuthProvider from "@/providers/AuthProviers";
 import CartProvider from "@/providers/CartProviders";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
@@ -57,26 +58,28 @@ function RootLayoutNav() {
         colorScheme === "dark" ? DarkTheme : DefaultTheme
       }
     >
-      <CartProvider>
-        <Stack>
-          <Stack.Screen
-            name="(admin)"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="(user)"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="(auth)"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="cart"
-            options={{ presentation: "modal" }}
-          />
-        </Stack>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Stack>
+            <Stack.Screen
+              name="(admin)"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(user)"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(auth)"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="cart"
+              options={{ presentation: "modal" }}
+            />
+          </Stack>
+        </CartProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
