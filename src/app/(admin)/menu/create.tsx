@@ -1,9 +1,19 @@
+import {
+  useDeleteProduct,
+  useInsertProduct,
+  useProduct,
+  useUpdateProduct,
+} from "@/api/products";
 import Button from "@/components/Button";
 import Colors from "@/constants/Colors";
 import { defaultPizzaImage } from "@/constants/Images";
 import * as ImagePicker from "expo-image-picker";
-import { Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import {
+  Stack,
+  useLocalSearchParams,
+  useRouter,
+} from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -19,9 +29,30 @@ function CreateProductScreen() {
   const [errors, setErrors] = useState("");
   const [image, setImage] = useState<string | null>(null);
 
-  const { id } = useLocalSearchParams();
+  const { id: idString } = useLocalSearchParams();
 
-  const isUpdating = !!id;
+  const id = parseFloat(
+    typeof idString === "string" ? idString : idString?.[0]
+  );
+
+  const isUpdating = !!idString;
+
+  // console.log(id);
+
+  const { mutate: inserProduct } = useInsertProduct();
+  const { mutate: updateProduct } = useUpdateProduct();
+  const { data: updatingProduct } = useProduct(id);
+  const { mutate: deleteProduct } = useDeleteProduct();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (updatingProduct) {
+      setName(updatingProduct.name);
+      setPrice(updatingProduct.price.toString());
+      setImage(updatingProduct.image);
+    }
+  }, [updatingProduct]);
 
   const resetFields = () => {
     setName("");
@@ -75,8 +106,15 @@ function CreateProductScreen() {
     if (!validateInput()) {
       return;
     }
-
-    resetFields();
+    inserProduct(
+      { name, price: parseFloat(price), image },
+      {
+        onSuccess: () => {
+          resetFields();
+          router.back();
+        },
+      }
+    );
   };
 
   const onUpdate = () => {
@@ -84,10 +122,30 @@ function CreateProductScreen() {
       return;
     }
 
-    resetFields();
+    updateProduct(
+      {
+        id,
+        name,
+        price: parseFloat(price),
+        image,
+      },
+      {
+        onSuccess: () => {
+          resetFields();
+          router.back();
+        },
+      }
+    );
   };
 
-  const onDelete = () => {};
+  const onDelete = () => {
+    deleteProduct(id, {
+      onSuccess: () => {
+        resetFields();
+        router.replace("/(admin)");
+      },
+    });
+  };
 
   const confirmDelete = () => {
     Alert.alert(
