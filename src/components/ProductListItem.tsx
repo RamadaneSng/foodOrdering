@@ -7,10 +7,10 @@ import {
   StyleSheet,
   Text,
 } from "react-native";
-import { Product } from "../types";
+import { Tables } from "../types";
 
 type ProductListItemProps = {
-  product: Product;
+  product: Tables<"products">;
 };
 
 const ProductListItem = ({
