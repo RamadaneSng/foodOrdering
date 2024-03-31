@@ -1,13 +1,27 @@
+import { useAmdinOrderList } from "@/api/orders";
 import OrderListItem from "@/components/OrderListItem";
-import orders from "@assets/data/orders";
-import { Stack } from "expo-router";
-import { FlatList } from "react-native";
-
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+} from "react-native";
 
 export default function OrdersScreen() {
+  const {
+    data: orders,
+    error,
+    isLoading,
+  } = useAmdinOrderList({ archived: true });
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <Text>Failled to load data</Text>;
+  }
   return (
     <>
-     
       <FlatList
         data={orders}
         contentContainerStyle={{ gap: 10, padding: 10 }}
